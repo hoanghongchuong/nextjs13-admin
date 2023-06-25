@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./page.module.css";
 import Link from "next/link";
 
-
 import { sidebarItems } from "@/config/sidebarItem";
+import { useRouter } from "next/router";
+import SidebarItem from "./sidebarItem";
 
 function Sidebar() {
   return (
@@ -13,15 +14,9 @@ function Sidebar() {
           ChuongHH
         </Link>
       </div>
-      <ul className="sidebar-menu p-3">
-        {sidebarItems.map((item) => {
-          return (
-            <li className="sidebar-menu-item" key={item.id}>
-              <Link href={item.url}>
-                {item.icon} {item.title}
-              </Link>
-            </li>
-          );
+      <ul className="sidebar-menu navbar-nav">
+        {sidebarItems.map((menu, index) => {
+          return <SidebarItem menu={menu} key={index} />;
         })}
       </ul>
     </div>
