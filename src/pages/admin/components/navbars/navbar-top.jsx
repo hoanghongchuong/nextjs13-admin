@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaBars } from "react-icons/fa";
-import user_image from '../../../../assets/images/avatar-1.jpg'
+import user_image from "../../../../assets/images/avatar-1.jpg";
 
 function NavbarTop({ toggleSidebar }) {
   const renderNotificationItem = (item, index) => (
@@ -18,8 +18,8 @@ function NavbarTop({ toggleSidebar }) {
   };
 
   const renderUserToggle = (user) => (
-    <div className="topnav__right-user">
-      <div className="topnav__right-user__image">
+    <div className="topnav-right-user">
+      <div className="topnav-right-user-image">
         <Image src={user.image} alt="" />
       </div>
       {/* <div className="topnav__right-user__name">{user.display_name}</div> */}
@@ -96,7 +96,7 @@ function NavbarTop({ toggleSidebar }) {
             </div>
           </div>
           <div className="navbar-right ms-2 d-flex nav-top-wrap navbar-nav align-items-center">
-            <div className="topnav__right-item me-2">
+            <div className="topnav-right-item me-2">
               <Dropdown
                 icon="fa fa-bell"
                 contentData={notifications}
@@ -106,14 +106,13 @@ function NavbarTop({ toggleSidebar }) {
                 classCustom="item-alert"
               />
             </div>
-            <div className="topnav__right-item">
-                    {/* dropdown here */}
-                    <Dropdown
-                        customToggle={() => renderUserToggle(curr_user)}
-                        contentData={userMenus}
-                        renderItems={(item, index) => renderUserMenu(item, index)}
-                    />
-                </div>
+            <div className="topnav-right-item">
+              <Dropdown
+                customToggle={() => renderUserToggle(curr_user)}
+                contentData={userMenus}
+                renderItems={(item, index) => renderUserMenu(item, index)}
+              />
+            </div>
           </div>
         </div>
       </div>
