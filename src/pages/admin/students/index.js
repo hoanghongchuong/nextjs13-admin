@@ -1,23 +1,71 @@
 import AdminLayout from "@/components/layout/admin";
+import PaginationCustom from "@/components/pagination/pagination";
+import { useStudentList } from "@/hooks/use-student-list";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { Form, Table } from "react-bootstrap";
 
-function ProductList(props) {
+function StudentList(props) {
+  const router = useRouter()
+  const [keyword, setKeyword] = useState("");
+  const [filters, setFilters] = useState({ keyword: "" });
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data, isLoading } = useStudentList({ params: filters });
+
+  if (isLoading == true) {
+    return <p>loading...</p>;
+  }
+
+  const students = data.data?.data || [];
+  const totalPages = Math.ceil(data.data.total / data.data.per_page);
+
+  function handleInputChange(value) {
+    setKeyword(value);
+    const query = { keyword: value };
+    if(!value) {
+      delete query.keyword;
+    }
+
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
+    setFilters({
+      // ...prevFilters,
+      keyword: value,
+    });
+  }
+
+  function handlePageChange(page) {
+    setCurrentPage(page);
+    // Cập nhật URL với param `currentPage`
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: page },
+    });
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      page: page
+    }))
+  }
+
   return (
     <div>
       <div className="content-header">
         <div className="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
+          <div className="row mb-2">
+            <div className="col-sm-6">
               <h1>Students</h1>
             </div>
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">
-                  <a href="#">Home</a>
+            <div className="col-sm-6">
+              <ol className="breadcrumb float-sm-right">
+                <li className="breadcrumb-item">
+                  <Link href="#">Home</Link>
                 </li>
-                <li class="breadcrumb-item active">Students</li>
+                <li className="breadcrumb-item active">Students</li>
               </ol>
             </div>
           </div>
@@ -27,17 +75,18 @@ function ProductList(props) {
       <div className="content">
         <div className="container-fluid">
           <div className="row mb-3">
-            <div class="col-3">
+            <div className="col-3">
               <input
                 name="sku"
                 id="sku"
                 type="text"
-                class="form-control form-control-sm"
-                value=""
+                className="form-control form-control-sm"
+                value={keyword}
                 placeholder="Name, phone, parent"
+                onChange={(e) => handleInputChange(e.target.value)}
               />
             </div>
-            <div class="col-2">
+            <div className="col-2">
               <Form.Select aria-label="Default select example" size="sm">
                 <option>Status</option>
                 <option value="1">One</option>
@@ -45,17 +94,17 @@ function ProductList(props) {
                 <option value="3">Three</option>
               </Form.Select>
             </div>
-            <div class="col-4">
-              <button type="submit" class="btn btn-sm btn-primary">
+            <div className="col-4">
+              <button type="submit" className="btn btn-sm btn-primary">
                 Search
               </button>
             </div>
           </div>
-          <div className="card ">
+          <div className="card mb-2">
             <div className="card-header">
-            <p class="card-title mb-0">
+              <p className="card-title mb-0">
                 Showing 1 to 20 of 172549 records
-            </p>
+              </p>
             </div>
             <div className="card-body p-0">
               <Table hover responsive>
@@ -67,265 +116,52 @@ function ProductList(props) {
                     <th style={{ width: "10%" }}>Gender</th>
                     <th style={{ width: "10%" }}>Parent</th>
                     <th style={{ width: "10%" }}>Phone Number</th>
-                    <th style={{ width: "3%" }} class="text-center">
+                    <th style={{ width: "3%" }} className="text-center">
                       Status
                     </th>
                     <th style={{ width: "7%" }}></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
+                  {students.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.id}</td>
+                      <td>{item.name}</td>
+                      <td>32</td>
+                      <td>{item.gender}</td>
+                      <td>{item.parent_name}</td>
+                      <td>{item.phone}</td>
+                      <td className="text-center">{item.status}</td>
+                      <td className="text-right">
+                        <Link className="btn btn-info btn-sm me-2" href="#">
+                          <i className="fas fa-pencil-alt me-1"></i>
+                          Edit
+                        </Link>
 
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>aaa</td>
-                    <td>32</td>
-                    <td>nam</td>
-                    <td>afds f</td>
-                    <td>123231232</td>
-                    <td className="text-center">active</td>
-                    <td className="text-right">
-                      <Link class="btn btn-info btn-sm me-2" href="#">
-                        <i class="fas fa-pencil-alt me-1"></i>
-                        Edit
-                      </Link>
-
-                      <Link class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
+                        <Link className="btn btn-danger btn-sm" href="#">
+                          <i className="fas fa-trash me-1"></i>
+                          Delete
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
-            </div>
+            </div>            
           </div>
+          <PaginationCustom
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
         </div>
       </div>
     </div>
   );
 }
 
-export default ProductList;
+export default StudentList;
 
-ProductList.getLayout = function getLayout(page) {
+StudentList.getLayout = function getLayout(page) {
   return <AdminLayout>{page}</AdminLayout>;
 };

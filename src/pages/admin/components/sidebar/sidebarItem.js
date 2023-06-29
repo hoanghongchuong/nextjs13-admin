@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 function SidebarItem({ menu }) {
   const location = useRouter();
   const [open, setOpen] = useState(false);
-  console.log(menu);
   //   useEffect(() => {
   //     if (appState.includes(menu.state)) {
   //       setOpen(true);

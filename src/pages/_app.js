@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }) {
   return getLayout(
     <SSRProvider>
       <Component {...pageProps} />
-    </SSRProvider>
+     </SSRProvider>
   
   )
 }
