@@ -1,43 +1,45 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css");
+@import 'react-datepicker/dist/react-datepicker.css';
+
 
 :root {
   --main-bg: #ffffff;
-    --second-bg: #fafafb;
-    --txt-color: #455560;
-    --txt-white: #fff;
-    --main-color: #349eff;
-    --second-color: #62b4ff;
-    --box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  --second-bg: #fafafb;
+  --txt-color: #455560;
+  --txt-white: #fff;
+  --main-color: #349eff;
+  --second-color: #62b4ff;
+  --box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
-    --main-bg-light: #ffffff;
-    --second-bg-light: #fafafb;
-    --txt-color-light: #455560;
-    --box-shadow-light: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  --main-bg-light: #ffffff;
+  --second-bg-light: #fafafb;
+  --txt-color-light: #455560;
+  --box-shadow-light: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
-    --main-bg-dark: #2d2d2d;
-    --second-bg-dark: #202020;
-    --txt-color-dark: #bbbbbb;
-    --box-shadow-dark: rgba(0, 0, 0, 0.2) 0px 5px 10px;
+  --main-bg-dark: #2d2d2d;
+  --second-bg-dark: #202020;
+  --txt-color-dark: #bbbbbb;
+  --box-shadow-dark: rgba(0, 0, 0, 0.2) 0px 5px 10px;
 
-    --main-color-blue: #349eff;
-    --second-color-blue: #62b4ff;
+  --main-color-blue: #349eff;
+  --second-color-blue: #62b4ff;
 
-    --main-color-red: #fb0b12;
-    --second-color-red: #ff4a6b;
+  --main-color-red: #fb0b12;
+  --second-color-red: #ff4a6b;
 
-    --main-color-cyan: #10d4d2;
-    --second-color-cyan: #2ae9e6;
+  --main-color-cyan: #10d4d2;
+  --second-color-cyan: #2ae9e6;
 
-    --main-color-green: #019707;
-    --second-color-green: #4caf50;
+  --main-color-green: #019707;
+  --second-color-green: #4caf50;
 
-    --main-color-orange: #d68102;
-    --second-color-orange: #fca11a;
+  --main-color-orange: #d68102;
+  --second-color-orange: #fca11a;
 
-    --sidebar-width: 300px;
-    --border-radius: 15px;
-    --topnav-height: 110px;
-    --transition-cubic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --sidebar-width: 300px;
+  --border-radius: 15px;
+  --topnav-height: 110px;
+  --transition-cubic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 * {
   box-sizing: border-box;
@@ -56,6 +58,25 @@ a {
 
 ul li {
   list-style-type: none;
+}
+.fw-500 {
+  font-weight: 500;
+}
+.fw-600 {
+  font-weight: 600;
+}
+.fw-700 {
+  font-weight: 700;
+}
+.error-invalid, .error {
+  color: red;
+  font-size: 14px;
+}
+.border-danger {
+  border-color: red;
+}
+.react-datepicker-wrapper {
+  width: 100%;
 }
 
 #wrapper {
@@ -198,14 +219,14 @@ ul li {
   font-weight: 600;
 }
 .item-alert {
-    height: 40px;
-    width: 40px;
-    background: #ccc !important;
-    border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  background: #ccc !important;
+  border-radius: 50%;
 }
 
 .content-header h1 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   margin: 0;
 }
 
@@ -221,19 +242,17 @@ ul li {
 .table thead {
   background-color: #f4f6f9;
 }
-@media (min-width: 1200px)
-{
+@media (min-width: 1200px) {
   .card-title {
     font-size: 1rem;
-}
+  }
 }
 
-@media (min-width: 576px){
+@media (min-width: 576px) {
   .float-sm-right {
     float: right !important;
   }
 }
-
 
 @media (min-width: 768px) {
   .toggled .sidebar {

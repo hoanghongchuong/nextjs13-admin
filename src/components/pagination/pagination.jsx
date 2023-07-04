@@ -4,10 +4,8 @@ import { Pagination } from "react-bootstrap";
 const PaginationCustom = ({ currentPage, totalPages, onPageChange }) => {
   const renderPages = () => {
     const pages = [];
-    console.log({ totalPages });
     if (totalPages < 1) {
-      console.log("vao day");
-      return <p>Nothing item</p>;
+      return <p className="text-center">Nothing item</p>;
     }
 
     pages.push(

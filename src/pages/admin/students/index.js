@@ -20,7 +20,10 @@ function StudentList(props) {
   }
 
   const students = data.data?.data || [];
-  const totalPages = Math.ceil(data.data.total / data.data.per_page);
+  const totalRecords = data.data.total;
+  const from = data.data.from;
+  const to = data.data.to;
+  const totalPages = Math.ceil(totalRecords / data.data.per_page);
 
   function handleInputChange(value) {
     setKeyword(value);
@@ -101,13 +104,16 @@ function StudentList(props) {
             </div>
           </div>
           <div className="card mb-2">
-            <div className="card-header">
+            <div className="card-header d-flex align-items-center justify-content-between">
               <p className="card-title mb-0">
-                Showing 1 to 20 of 172549 records
+                Showing {from} to {to} of {totalRecords} records
               </p>
+              <div className="">
+                <Link href="/admin/students/create" className="btn btn-sm btn-success"> Thêm mới</Link>
+              </div>
             </div>
             <div className="card-body p-0">
-              <Table hover responsive>
+              <Table hover responsive className="mb-0">
                 <thead>
                   <tr>
                     <th style={{ width: "1%" }}>#</th>
@@ -127,18 +133,18 @@ function StudentList(props) {
                     <tr key={item.id}>
                       <td>{item.id}</td>
                       <td>{item.name}</td>
-                      <td>32</td>
+                      <td>{item.birthday}</td>
                       <td>{item.gender}</td>
                       <td>{item.parent_name}</td>
                       <td>{item.phone}</td>
                       <td className="text-center">{item.status}</td>
-                      <td className="text-right">
-                        <Link className="btn btn-info btn-sm me-2" href="#">
+                      <td className="text-right d-flex flex-nowrap justify-content-end">
+                        <Link className="btn btn-info btn-sm me-2 d-flex flex-nowrap align-items-center" href="#">
                           <i className="fas fa-pencil-alt me-1"></i>
                           Edit
                         </Link>
 
-                        <Link className="btn btn-danger btn-sm" href="#">
+                        <Link className="btn btn-danger btn-sm d-flex flex-nowrap align-items-center" href="#">
                           <i className="fas fa-trash me-1"></i>
                           Delete
                         </Link>

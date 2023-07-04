@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react'
 
 
-const clickOutsideRef = (contentRef, toggleRef) => {
+const useClickOutsideRef = (contentRef, toggleRef) => {
     const handleClickOutside = (e) => {
       if (toggleRef.current && toggleRef.current.contains(e.target)) {
         contentRef.current.classList.toggle('active');
@@ -25,7 +25,7 @@ const DropdownCustom = props => {
     const dropdown_toggle_el = useRef(null)
     const dropdown_content_el = useRef(null)
 
-    clickOutsideRef(dropdown_content_el, dropdown_toggle_el)
+    useClickOutsideRef(dropdown_content_el, dropdown_toggle_el)
     const classCustom = props.classCustom ? props.classCustom : ''
     return (
         <div className="dropdown">
