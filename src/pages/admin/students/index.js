@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Form, Table } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
 
 function StudentList(props) {
-  const router = useRouter()
+  const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [filters, setFilters] = useState({ keyword: "" });
 
@@ -15,20 +16,24 @@ function StudentList(props) {
 
   const { data, isLoading } = useStudentList({ params: filters });
 
-  if (isLoading == true) {
-    return <p>loading...</p>;
-  }
+  // if (isLoading == true) {
+  //   return (
+  //     <div style={{ minHeight: "100%" }}>
+  //       <Skeleton height={"100vh"} style={{ display: "block" }} />
+  //     </div>
+  //   );
+  // }
 
   const students = data.data?.data || [];
-  const totalRecords = data.data.total;
-  const from = data.data.from;
-  const to = data.data.to;
-  const totalPages = Math.ceil(totalRecords / data.data.per_page);
+  const totalRecords = data.data?.total;
+  const from = data.data?.from;
+  const to = data.data?.to;
+  const totalPages = Math.ceil(totalRecords / data.data?.per_page);
 
   function handleInputChange(value) {
     setKeyword(value);
     const query = { keyword: value };
-    if(!value) {
+    if (!value) {
       delete query.keyword;
     }
 
@@ -51,8 +56,8 @@ function StudentList(props) {
     });
     setFilters((prevFilters) => ({
       ...prevFilters,
-      page: page
-    }))
+      page: page,
+    }));
   }
 
   return (
@@ -109,56 +114,73 @@ function StudentList(props) {
                 Showing {from} to {to} of {totalRecords} records
               </p>
               <div className="">
-                <Link href="/admin/students/create" className="btn btn-sm btn-success"> Thêm mới</Link>
+                <Link
+                  href="/admin/students/create"
+                  className="btn btn-sm btn-success"
+                >
+                  {" "}
+                  Thêm mới
+                </Link>
               </div>
             </div>
             <div className="card-body p-0">
-              <Table hover responsive className="mb-0">
-                <thead>
-                  <tr>
-                    <th style={{ width: "1%" }}>#</th>
-                    <th style={{ width: "10%" }}>Name</th>
-                    <th style={{ width: "10%" }}>Age</th>
-                    <th style={{ width: "10%" }}>Gender</th>
-                    <th style={{ width: "10%" }}>Parent</th>
-                    <th style={{ width: "10%" }}>Phone Number</th>
-                    <th style={{ width: "3%" }} className="text-center">
-                      Status
-                    </th>
-                    <th style={{ width: "7%" }}></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {students.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.id}</td>
-                      <td>{item.name}</td>
-                      <td>{item.birthday}</td>
-                      <td>{item.gender}</td>
-                      <td>{item.parent_name}</td>
-                      <td>{item.phone}</td>
-                      <td className="text-center">{item.status}</td>
-                      <td className="text-right d-flex flex-nowrap justify-content-end">
-                        <Link className="btn btn-info btn-sm me-2 d-flex flex-nowrap align-items-center" href="#">
-                          <i className="fas fa-pencil-alt me-1"></i>
-                          Edit
-                        </Link>
-
-                        <Link className="btn btn-danger btn-sm d-flex flex-nowrap align-items-center" href="#">
-                          <i className="fas fa-trash me-1"></i>
-                          Delete
-                        </Link>
-                      </td>
+              {isLoading ? (
+                <Skeleton count={11} style={{ display: "block" }} />
+              ) : (
+                <Table hover responsive className="mb-0">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "1%" }}>#</th>
+                      <th style={{ width: "10%" }}>Name</th>
+                      <th style={{ width: "10%" }}>Age</th>
+                      <th style={{ width: "10%" }}>Gender</th>
+                      <th style={{ width: "10%" }}>Parent</th>
+                      <th style={{ width: "10%" }}>Phone Number</th>
+                      <th style={{ width: "3%" }} className="text-center">
+                        Status
+                      </th>
+                      <th style={{ width: "7%" }}></th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>            
+                  </thead>
+                  <tbody>
+                    {students.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.id}</td>
+                        <td>{item.name}</td>
+                        <td>{item.birthday}</td>
+                        <td>{item.gender}</td>
+                        <td>{item.parent_name}</td>
+                        <td>{item.phone}</td>
+                        <td className="text-center">{item.status}</td>
+                        <td className="text-right d-flex flex-nowrap justify-content-end">
+                          <Link
+                            className="btn btn-info btn-sm me-2 d-flex flex-nowrap align-items-center"
+                            href="#"
+                          >
+                            <i className="fas fa-pencil-alt me-1"></i>
+                            Edit
+                          </Link>
+
+                          <Link
+                            className="btn btn-danger btn-sm d-flex flex-nowrap align-items-center"
+                            href="#"
+                          >
+                            <i className="fas fa-trash me-1"></i>
+                            Delete
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </div>
           </div>
           <PaginationCustom
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
+              isLoading={isLoading}
             />
         </div>
       </div>

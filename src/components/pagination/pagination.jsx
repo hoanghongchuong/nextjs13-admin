@@ -1,7 +1,13 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
 
-const PaginationCustom = ({ currentPage, totalPages, onPageChange }) => {
+const PaginationCustom = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  isLoading,
+}) => {
   const renderPages = () => {
     const pages = [];
     if (totalPages < 1) {
@@ -9,12 +15,12 @@ const PaginationCustom = ({ currentPage, totalPages, onPageChange }) => {
     }
 
     pages.push(
-        <Pagination.Prev
-          key="prev"
-          disabled={currentPage === 1}
-          onClick={() => onPageChange(currentPage - 1)}
-        />
-      );
+      <Pagination.Prev
+        key="prev"
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+      />
+    );
     // Tạo danh sách các trang để hiển thị
     for (let i = 1; i <= totalPages; i++) {
       // Hiển thị trang hiện tại và các trang xung quanh nó
@@ -42,13 +48,12 @@ const PaginationCustom = ({ currentPage, totalPages, onPageChange }) => {
       }
     }
     pages.push(
-        <Pagination.Next
-          key="next"
-          disabled={currentPage === totalPages}
-          onClick={() => onPageChange(currentPage + 1)}
-        />
-      );
-  
+      <Pagination.Next
+        key="next"
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+      />
+    );
 
     return pages;
   };

@@ -10,17 +10,29 @@ import DatePicker from "@/components/form/date-picker";
 import Textarea from "@/components/form/textarea";
 import Select from "@/components/form/select";
 import DatePickerCustom from "@/components/form/date-picker";
+import studentApi from "@/api-client/student-api";
+import { toast } from "react-toastify";
+import moment from "moment";
+import { useRouter } from "next/router";
 
 export default function CreateStudent() {
   const [birthday, setBirthday] = useState(null);
   const [dateCheckin, setDateCheckin] = useState(null);
+  const router = useRouter();
 
   const validationSchema = Yup.object().shape({
     full_name: Yup.string().required("Trường này là bắt buộc."),
     parent_name: Yup.string().required("Trường này là bắt buộc."),
     phone: Yup.string().required("Trường này là bắt buộc."),
-    birthday: Yup.date().required("Trường này là bắt buộc."),
-    classes: Yup.string().required("Trường này là bắt buộc."),
+    birthday: Yup.string()
+      .transform((value, originalValue) => {
+        if (moment(originalValue, "DD-MM-YYYY", true).isValid()) {
+          return moment(originalValue, "DD-MM-YYYY").format("YYYY-MM-DD");
+        }
+        return originalValue;
+      })
+      .required("Trường này là bắt buộc."),
+    class_id: Yup.string().required("Trường này là bắt buộc."),
     address: Yup.string(),
   });
   const initialValues = {
@@ -53,9 +65,14 @@ export default function CreateStudent() {
   ];
 
   const handleSubmit = async (values) => {
-    // values.birthday = birthday;
-    // values.date_checkin = dateCheckin;
-    console.log({ values });
+    try {
+      values.name = values.full_name;
+      const result = await studentApi.createStudent(values);
+      router.push('/admin/students')
+      toast.success("Success");
+    } catch (error) {
+      toast.error("Fail to add new student.");
+    }
   };
 
   return (
@@ -108,10 +125,10 @@ export default function CreateStudent() {
                             label="Họ và tên"
                           />
                         </div>
-                        <div className="form-group mb-3">                          
+                        <div className="form-group mb-3">
                           <Select
                             label="Lớp"
-                            name="classes"
+                            name="class_id"
                             options={listClasses}
                           />
                         </div>
