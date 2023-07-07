@@ -1,9 +1,8 @@
 import AdminLayout from "@/components/layout/admin";
 import Link from "next/link";
-import React, { useState } from "react";
-import ReactDatePicker from "react-datepicker";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import InputField from "@/components/form/input-field";
 import RadioButton from "@/components/form/radio-button";
 import DatePicker from "@/components/form/date-picker";
@@ -14,11 +13,29 @@ import studentApi from "@/api-client/student-api";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { useRouter } from "next/router";
+import classesApi from "@/api-client/classes-api";
+import LoadingCustom from "@/components/loading/loading";
 
 export default function CreateStudent() {
-  const [birthday, setBirthday] = useState(null);
-  const [dateCheckin, setDateCheckin] = useState(null);
   const router = useRouter();
+  const [listClasses, setListClasses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsLoading(true)
+      async function getListClasses() {
+        const result = await classesApi.getAllClasses();
+        setListClasses(result.data);
+        setIsLoading(false)
+      }
+      getListClasses();
+    } catch (error) {
+      setIsLoading(false)
+      console.log({ error });
+    }
+  }, []);
 
   const validationSchema = Yup.object().shape({
     full_name: Yup.string().required("Trường này là bắt buộc."),
@@ -32,7 +49,6 @@ export default function CreateStudent() {
         return originalValue;
       })
       .required("Trường này là bắt buộc."),
-    class_id: Yup.string().required("Trường này là bắt buộc."),
     address: Yup.string(),
   });
   const initialValues = {
@@ -45,38 +61,46 @@ export default function CreateStudent() {
     date_checkin: "",
   };
 
-  const listClasses = [
-    {
-      id: 1,
-      name: "Lớp 1A",
-    },
-    {
-      id: 2,
-      name: "Lớp 1B",
-    },
-    {
-      id: 3,
-      name: "Lớp 1C",
-    },
-    {
-      id: 4,
-      name: "Lớp 1D",
-    },
-  ];
+  // const listClasses = [
+  //   {
+  //     id: 1,
+  //     name: "Lớp 1A",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Lớp 1B",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Lớp 1C",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Lớp 1D",
+  //   },
+  // ];
 
   const handleSubmit = async (values) => {
     try {
+      setIsSaving(true);
       values.name = values.full_name;
       const result = await studentApi.createStudent(values);
-      router.push('/admin/students')
+      router.push("/admin/students");
       toast.success("Success");
     } catch (error) {
       toast.error("Fail to add new student.");
     }
+    finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <div>
+    <>
+      {isLoading ? (
+        <LoadingCustom />
+      ) : (
+        <div>
       <div className="content-header">
         <div className="container-fluid">
           <div className="row mb-2">
@@ -95,7 +119,6 @@ export default function CreateStudent() {
           </div>
         </div>
       </div>
-
       <div className="content">
         <div className="container-fluid">
           <Formik
@@ -130,6 +153,7 @@ export default function CreateStudent() {
                             label="Lớp"
                             name="class_id"
                             options={listClasses}
+                            required
                           />
                         </div>
                         <div className="form-group mb-3">
@@ -143,7 +167,11 @@ export default function CreateStudent() {
                           />
                         </div>
                         <div className="form-group mb-3">
-                          <DatePickerCustom label="Ngày sinh" name="birthday" />
+                          <DatePickerCustom
+                            label="Ngày sinh"
+                            name="birthday"
+                            required
+                          />
                         </div>
 
                         <div className="form-group mb-3">
@@ -199,8 +227,8 @@ export default function CreateStudent() {
                 <div className="row mt-4">
                   <div className="col-md-12">
                     <div className="form-group text-center">
-                      <button type="submit" className="btn btn-sm btn-success">
-                        <i className="fa fa-save"></i> Save
+                      <button type="submit" className="btn btn-sm btn-success" disabled={isSaving}>
+                        {isSaving ? 'Saving...' : <><i className="fa fa-save"></i> Save</>}
                       </button>
                     </div>
                   </div>
@@ -211,6 +239,9 @@ export default function CreateStudent() {
         </div>
       </div>
     </div>
+      )}
+    </>
+    
   );
 }
 

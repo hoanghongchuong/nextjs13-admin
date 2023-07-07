@@ -8,7 +8,6 @@ export const studentApi = {
         return axiosClient.get(`/${id}`)
     },
     createStudent(payload) {
-        console.log({payload});
         return axiosClient.post('/students/create', payload)
     }
 }

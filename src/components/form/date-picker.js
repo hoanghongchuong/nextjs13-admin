@@ -5,7 +5,7 @@ import TextError from "./text-error";
 import moment from "moment";
 
 export default function DatePickerCustom(props) {
-  const { label, name, ...rest } = props;
+  const { label, name, required, ...rest } = props;
   const { touched, errors, setFieldValue } = useFormikContext();
   const inputClassName = `form-control ${
     touched[name] && errors[name] ? "is-invalid" : ""
@@ -19,12 +19,11 @@ export default function DatePickerCustom(props) {
   return (
     <div>
       <label htmlFor={name} className="fw-500 me-3">
-        {label}
+        {label} {required && <span className="text-danger">*</span>}
       </label>
       <Field name={name}>
         {({ form, field }) => {
           const { value } = field;
-          console.log("ccc", value);
           return (
             <DatePicker
               showIcon

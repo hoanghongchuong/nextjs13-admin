@@ -16,14 +16,6 @@ function StudentList(props) {
 
   const { data, isLoading } = useStudentList({ params: filters });
 
-  // if (isLoading == true) {
-  //   return (
-  //     <div style={{ minHeight: "100%" }}>
-  //       <Skeleton height={"100vh"} style={{ display: "block" }} />
-  //     </div>
-  //   );
-  // }
-
   const students = data.data?.data || [];
   const totalRecords = data.data?.total;
   const from = data.data?.from;
