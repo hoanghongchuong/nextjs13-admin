@@ -5,7 +5,7 @@ import useSWR from "swr";
 const fetcher = (url) => axiosClient.get(url);
 export function useStudentList({ params, options }) {
   const swrResponse = useSWR([QueryKeys.GET_STUDENT_LIST, params], () => studentApi.getListStudent(params), {
-    dedupingInterval: 30 * 1000,
+    dedupingInterval: 0 * 1000, // 0s
     keppPreviousData: true,
     fallbackData: {
       // data: {

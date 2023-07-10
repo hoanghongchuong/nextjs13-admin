@@ -1,8 +1,9 @@
+import { useRouter } from "next/router";
 import AdminLayout from "@/components/layout/admin";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import InputField from "@/components/form/input-field";
 import RadioButton from "@/components/form/radio-button";
 import Textarea from "@/components/form/textarea";
@@ -11,16 +12,17 @@ import DatePickerCustom from "@/components/form/date-picker";
 import studentApi from "@/api-client/student-api";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { useRouter } from "next/router";
 import classesApi from "@/api-client/classes-api";
 import LoadingCustom from "@/components/loading/loading";
 import { BeatLoader } from "react-spinners";
 
-export default function CreateStudent() {
+export default function EditStudent() {
   const router = useRouter();
   const [listClasses, setListClasses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [student, setStudent] = useState(null);
+  const studentId = router.query.id;
 
   useEffect(() => {
     try {
@@ -37,6 +39,26 @@ export default function CreateStudent() {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      setIsLoading(true);
+      if (studentId && !isNaN(studentId)) {
+        async function getStudent() {
+          console.log({ studentId });
+          const result = await studentApi.detailStudent(parseInt(studentId));
+          setStudent(result.data);
+          setIsLoading(false);
+        }
+        getStudent();
+      } else {
+        console.log("Invalid studentId");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+    }
+  }, [studentId, router]);
+
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Trường này là bắt buộc."),
     parent_name: Yup.string().required("Trường này là bắt buộc."),
@@ -52,24 +74,23 @@ export default function CreateStudent() {
     address: Yup.string(),
   });
   const initialValues = {
-    full_name: "",
-    parent_name: "",
-    phone: "",
-    gender: 1,
-    birthday: "",
-    address: "",
-    date_checkin: "",
+    name: student?.name || "",
+    parent_name: student?.parent_name || "",
+    phone: student?.phone || "",
+    gender: student?.gender || 1,
+    birthday: student?.birthday || "",
+    address: student?.address || "",
+    date_checkin: student?.date_checkin || "",
+    note: student?.note || "",
   };
-
 
   const handleSubmit = async (values) => {
     try {
       setIsSaving(true);
-      const result = await studentApi.createStudent(values);
-      router.push("/admin/students");
+      const result = await studentApi.updateStudent(values, studentId);
       toast.success("Success");
     } catch (error) {
-      toast.error("Fail to add new student.");
+      toast.error("Fail to update student.");
     } finally {
       setIsSaving(false);
     }
@@ -105,6 +126,7 @@ export default function CreateStudent() {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
+                enableReinitialize
               >
                 {({ values }) => (
                   <Form>
@@ -115,8 +137,7 @@ export default function CreateStudent() {
                             <h3 className="card-title mb-0">
                               Thông tin học sinh
                             </h3>
-                            <div className="card-tool">
-                            </div>
+                            <div className="card-tool"></div>
                           </div>
                           <div className="card-body">
                             <div className="form-group mb-3">
@@ -125,6 +146,7 @@ export default function CreateStudent() {
                                 required
                                 type="text"
                                 label="Họ và tên"
+                                value={student?.name || ""}
                               />
                             </div>
                             <div className="form-group mb-3">
@@ -133,6 +155,7 @@ export default function CreateStudent() {
                                 name="class_id"
                                 options={listClasses}
                                 required
+                                defaultValue={student?.class_id || ""}
                               />
                             </div>
                             <div className="form-group mb-3">
@@ -143,6 +166,7 @@ export default function CreateStudent() {
                                   { value: 2, title: "Nữ" },
                                 ]}
                                 label="Giới tính"
+                                value={student?.gender || 1}
                               />
                             </div>
                             <div className="form-group mb-3">
@@ -150,6 +174,7 @@ export default function CreateStudent() {
                                 label="Ngày sinh"
                                 name="birthday"
                                 required
+                                value={student?.birthday || ""}
                               />
                             </div>
 
@@ -157,6 +182,7 @@ export default function CreateStudent() {
                               <DatePickerCustom
                                 label="Ngày nhập học"
                                 name="date_checkin"
+                                value={student?.date_checkin || ""}
                               />
                             </div>
                           </div>
@@ -178,6 +204,7 @@ export default function CreateStudent() {
                                 type="text"
                                 placeholder="Nhập họ tên phụ huynh"
                                 required
+                                value={student?.parent_name || ""}
                               />
                             </div>
                             <div className="form-group mb-3">
@@ -186,6 +213,7 @@ export default function CreateStudent() {
                                 type="text"
                                 placeholder="Nhập số điện thoại"
                                 name="phone"
+                                value={student?.phone || ""}
                                 required
                               />
                             </div>
@@ -194,12 +222,17 @@ export default function CreateStudent() {
                               <InputField
                                 label="Địa chỉ"
                                 name="address"
+                                value={student?.address || ""}
                                 type="text"
                                 placeholder="Nhập địa chỉ"
                               />
                             </div>
                             <div className="form-group">
-                              <Textarea label="Ghi chú" name="note" />
+                              <Textarea
+                                label="Ghi chú"
+                                name="note"
+                                value={student?.note || ""}
+                              />
                             </div>
                           </div>
                         </div>
@@ -238,6 +271,6 @@ export default function CreateStudent() {
   );
 }
 
-CreateStudent.getLayout = function getLayout(page) {
+EditStudent.getLayout = function getLayout(page) {
   return <AdminLayout>{page}</AdminLayout>;
 };

@@ -38,6 +38,7 @@ export default function DatePickerCustom(props) {
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
+              value={value}
             />
           );
         }}

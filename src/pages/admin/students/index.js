@@ -1,3 +1,4 @@
+import studentApi from "@/api-client/student-api";
 import AdminLayout from "@/components/layout/admin";
 import PaginationCustom from "@/components/pagination/pagination";
 import { useStudentList } from "@/hooks/use-student-list";
@@ -6,6 +7,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Form, Table } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
+import { toast } from "react-toastify";
 
 function StudentList(props) {
   const router = useRouter();
@@ -13,8 +15,9 @@ function StudentList(props) {
   const [filters, setFilters] = useState({ keyword: "" });
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDelete, setIsDelete] = useState(false);
 
-  const { data, isLoading } = useStudentList({ params: filters });
+  const { data, isLoading, mutate } = useStudentList({ params: filters });
 
   const students = data.data?.data || [];
   const totalRecords = data.data?.total;
@@ -34,7 +37,6 @@ function StudentList(props) {
       query: query,
     });
     setFilters({
-      // ...prevFilters,
       keyword: value,
     });
   }
@@ -50,6 +52,20 @@ function StudentList(props) {
       ...prevFilters,
       page: page,
     }));
+  }
+
+  async function deleteStudent(id) {
+    try {
+      setIsDelete(true)
+      await studentApi.deleteStudent(id);
+      router.push("/admin/students");
+      await mutate();
+      toast.success("Delete success");
+      setIsDelete(false)
+    } catch (error) {
+      setIsDelete(false)
+      toast.error("Fail to add delete student.");
+    }
   }
 
   return (
@@ -116,18 +132,19 @@ function StudentList(props) {
               </div>
             </div>
             <div className="card-body p-0">
-              {isLoading ? (
+              {(isLoading || isDelete) ? (
                 <Skeleton count={11} style={{ display: "block" }} />
               ) : (
                 <Table hover responsive className="mb-0">
                   <thead>
                     <tr>
                       <th style={{ width: "1%" }}>#</th>
-                      <th style={{ width: "10%" }}>Name</th>
-                      <th style={{ width: "10%" }}>Age</th>
-                      <th style={{ width: "10%" }}>Gender</th>
-                      <th style={{ width: "10%" }}>Parent</th>
-                      <th style={{ width: "10%" }}>Phone Number</th>
+                      <th style={{ width: "10%" }}>Họ tên</th>
+                      <th style={{ width: "10%" }}>Ngày sinh</th>
+                      <th style={{ width: "10%" }}>Lớp</th>
+                      <th style={{ width: "10%" }}>Giới tính</th>
+                      <th style={{ width: "10%" }}>Phụ huynh</th>
+                      <th style={{ width: "10%" }}>Số điện thoại</th>
                       <th style={{ width: "3%" }} className="text-center">
                         Status
                       </th>
@@ -137,17 +154,18 @@ function StudentList(props) {
                   <tbody>
                     {students.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.id}</td>
+                        <td>ST_{item.id}</td>
                         <td>{item.name}</td>
                         <td>{item.birthday}</td>
-                        <td>{item.gender}</td>
+                        <td>{item.classes?.name}</td>
+                        <td>{item.gender == 1 ? "Nam" : "Nữ"}</td>
                         <td>{item.parent_name}</td>
                         <td>{item.phone}</td>
                         <td className="text-center">{item.status}</td>
                         <td className="text-right d-flex flex-nowrap justify-content-end">
                           <Link
                             className="btn btn-info btn-sm me-2 d-flex flex-nowrap align-items-center"
-                            href="#"
+                            href={"/admin/students/edit/" + item.id}
                           >
                             <i className="fas fa-pencil-alt me-1"></i>
                             Edit
@@ -155,7 +173,7 @@ function StudentList(props) {
 
                           <Link
                             className="btn btn-danger btn-sm d-flex flex-nowrap align-items-center"
-                            href="#"
+                            href="#" onClick={(e) => deleteStudent(item.id)}
                           >
                             <i className="fas fa-trash me-1"></i>
                             Delete
@@ -169,11 +187,11 @@ function StudentList(props) {
             </div>
           </div>
           <PaginationCustom
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              isLoading={isLoading}
-            />
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </div>

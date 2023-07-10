@@ -9,7 +9,10 @@ export default function RadioButton(props) {
       <label className="fw-500">{label}</label>
       <Field name={name}>
         {({ field }) => {
+          
           return options.map((option) => {
+      
+
             return (
               <div className="form-check" key={option.value}>
                 <input
@@ -18,7 +21,7 @@ export default function RadioButton(props) {
                   {...field}
                   {...rest}
                   value={option.value}
-                  checked={field.value == option.value}
+                  checked={(field.value) == (option.value)}
                   className="form-check-input"
                 />
                 <label htmlFor={option.value}>{option.title}</label>

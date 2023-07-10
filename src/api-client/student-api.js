@@ -1,15 +1,21 @@
-import axiosClient from "./axios-client"
+import axiosClient from "./axios-client";
 
 export const studentApi = {
-    getListStudent(params) {
-        return axiosClient.get('/students', {params: params})
-    },
-    detailStudent(id) {
-        return axiosClient.get(`/${id}`)
-    },
-    createStudent(payload) {
-        return axiosClient.post('/students/create', payload)
-    }
-}
+  getListStudent(params) {
+    return axiosClient.get("/students", { params: params });
+  },
+  detailStudent(id) {
+    return axiosClient.get(`/students/detail/${id}`);
+  },
+  createStudent(payload) {
+    return axiosClient.post("/students/create", payload);
+  },
+  updateStudent(payload, id) {
+    return axiosClient.put(`/students/update/${id}`, payload);
+  },
+  deleteStudent(id) {
+    return axiosClient.delete("/students/delete/" + id);
+  },
+};
 
 export default studentApi;
