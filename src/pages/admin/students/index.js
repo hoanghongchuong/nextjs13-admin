@@ -2,10 +2,11 @@ import studentApi from "@/api-client/student-api";
 import AdminLayout from "@/components/layout/admin";
 import PaginationCustom from "@/components/pagination/pagination";
 import { useStudentList } from "@/hooks/use-student-list";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { Form, Table } from "react-bootstrap";
+import { Button, Form, Modal, Table } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
 
@@ -15,7 +16,10 @@ function StudentList(props) {
   const [filters, setFilters] = useState({ keyword: "" });
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [showModalDelete, setshowModalDelete] = useState(false);
+  const [statusStudent, setStatusStudent] = useState('');
   const [isDelete, setIsDelete] = useState(false);
+  const [studentSelected, setStudentSelected] = useState({});
 
   const { data, isLoading, mutate } = useStudentList({ params: filters });
 
@@ -40,6 +44,28 @@ function StudentList(props) {
       keyword: value,
     });
   }
+  function handleClickSearch() {
+    const query = { keyword: keyword };
+    if (!keyword) {
+      delete query.keyword;
+    }
+
+    if (statusStudent) {
+      query.status = statusStudent;
+    }
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
+    setFilters({
+      keyword: keyword,
+      status: statusStudent
+    });
+  }
+
+  function handleSelectChange(e) {
+    setStatusStudent(e.target.value)
+  }
 
   function handlePageChange(page) {
     setCurrentPage(page);
@@ -54,22 +80,50 @@ function StudentList(props) {
     }));
   }
 
-  async function deleteStudent(id) {
+  function openModalDelete(student) {
+    setStudentSelected(student);
+    setshowModalDelete(true);
+  }
+
+  async function deleteStudent() {
     try {
-      setIsDelete(true)
-      await studentApi.deleteStudent(id);
+      setIsDelete(true);
+      setshowModalDelete(false)
+      await studentApi.deleteStudent(studentSelected.id);
       router.push("/admin/students");
       await mutate();
       toast.success("Delete success");
-      setIsDelete(false)
+      setIsDelete(false);
     } catch (error) {
-      setIsDelete(false)
+      setIsDelete(false);
       toast.error("Fail to add delete student.");
     }
   }
 
   return (
     <div>
+      <Head>
+        <title>Danh sách học sinh</title>
+        <meta property="og:title" content=">Danh sách học sinh" key="title" />
+      </Head>
+      <Modal
+        show={showModalDelete}
+        onHide={() => setshowModalDelete(false)}
+        animation={true}        
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Student</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Xác nhận xóa học sinh {studentSelected.name}?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setshowModalDelete(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={deleteStudent}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="content-header">
         <div className="container-fluid">
           <div className="row mb-2">
@@ -99,27 +153,26 @@ function StudentList(props) {
                 className="form-control form-control-sm"
                 value={keyword}
                 placeholder="Name, phone, parent"
-                onChange={(e) => handleInputChange(e.target.value)}
+                onChange={(e) => setKeyword(e.target.value)}
               />
             </div>
             <div className="col-2">
-              <Form.Select aria-label="Default select example" size="sm">
-                <option>Status</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <Form.Select aria-label="Default select example" size="sm" onChange={handleSelectChange}>
+                <option value="">Trạng thái</option>
+                <option value="1">Đang học</option>
+                <option value="2">Nghỉ học</option>
               </Form.Select>
             </div>
             <div className="col-4">
-              <button type="submit" className="btn btn-sm btn-primary">
-                Search
+              <button type="button" className="btn btn-sm btn-primary" onClick={handleClickSearch}>
+                Tìm kiếm
               </button>
             </div>
           </div>
           <div className="card mb-2">
             <div className="card-header d-flex align-items-center justify-content-between">
               <p className="card-title mb-0">
-                Showing {from} to {to} of {totalRecords} records
+                Showing {from} to {to} of {totalRecords} học sinh
               </p>
               <div className="">
                 <Link
@@ -132,7 +185,7 @@ function StudentList(props) {
               </div>
             </div>
             <div className="card-body p-0">
-              {(isLoading || isDelete) ? (
+              {isLoading || isDelete ? (
                 <Skeleton count={11} style={{ display: "block" }} />
               ) : (
                 <Table hover responsive className="mb-0">
@@ -141,14 +194,16 @@ function StudentList(props) {
                       <th style={{ width: "1%" }}>#</th>
                       <th style={{ width: "10%" }}>Họ tên</th>
                       <th style={{ width: "10%" }}>Ngày sinh</th>
-                      <th style={{ width: "10%" }}>Lớp</th>
+                      <th style={{ width: "8%" }}>Lớp</th>
                       <th style={{ width: "10%" }}>Giới tính</th>
                       <th style={{ width: "10%" }}>Phụ huynh</th>
                       <th style={{ width: "10%" }}>Số điện thoại</th>
-                      <th style={{ width: "3%" }} className="text-center">
+                      <th style={{ width: "5%" }} className="text-center">
                         Status
                       </th>
-                      <th style={{ width: "7%" }}></th>
+                      <th style={{ width: "7%" }} className="text-center">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -161,23 +216,26 @@ function StudentList(props) {
                         <td>{item.gender == 1 ? "Nam" : "Nữ"}</td>
                         <td>{item.parent_name}</td>
                         <td>{item.phone}</td>
-                        <td className="text-center">{item.status}</td>
-                        <td className="text-right d-flex flex-nowrap justify-content-end">
+                        <td className="text-center">{item.status == 1 ? "Đang học" : "Nghỉ học"}</td>
+                        <td>
+                          <div className="text-right d-flex flex-nowrap justify-content-end">
                           <Link
                             className="btn btn-info btn-sm me-2 d-flex flex-nowrap align-items-center"
                             href={"/admin/students/edit/" + item.id}
                           >
                             <i className="fas fa-pencil-alt me-1"></i>
-                            Edit
+                            Sửa
                           </Link>
 
                           <Link
                             className="btn btn-danger btn-sm d-flex flex-nowrap align-items-center"
-                            href="#" onClick={(e) => deleteStudent(item.id)}
+                            href="#"
+                            onClick={(e) => openModalDelete(item)}
                           >
                             <i className="fas fa-trash me-1"></i>
-                            Delete
+                            Xóa
                           </Link>
+                          </div>
                         </td>
                       </tr>
                     ))}

@@ -2,6 +2,7 @@ import axiosClient from "./axios-client";
 
 export const studentApi = {
   getListStudent(params) {
+    console.log({params});
     return axiosClient.get("/students", { params: params });
   },
   detailStudent(id) {

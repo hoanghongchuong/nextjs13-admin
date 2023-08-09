@@ -1,5 +1,5 @@
 import React from "react";
-import { BeatLoader, FadeLoader } from "react-spinners";
+import { FadeLoader } from "react-spinners";
 import styles from "./loading.module.css";
 
 // const override = CSSProperties = {

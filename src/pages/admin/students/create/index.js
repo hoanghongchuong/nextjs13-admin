@@ -67,7 +67,7 @@ export default function CreateStudent() {
       setIsSaving(true);
       const result = await studentApi.createStudent(values);
       router.push("/admin/students");
-      toast.success("Success");
+      toast.success("Thêm mới thành công.");
     } catch (error) {
       toast.error("Fail to add new student.");
     } finally {
@@ -92,7 +92,7 @@ export default function CreateStudent() {
                     <li className="breadcrumb-item">
                       <Link href="#">Home</Link>
                     </li>
-                    <li className="breadcrumb-item">Students</li>
+                    <li className="breadcrumb-item">Học sinh</li>
                     <li className="breadcrumb-item active">create</li>
                   </ol>
                 </div>

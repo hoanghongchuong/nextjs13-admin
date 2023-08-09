@@ -126,6 +126,7 @@ ul li {
   transform: scaleY(0);
   transform-origin: top;
   transition: opacity 0.3s, transform 0.3s;
+  display: none;
 }
 
 .sub-menu .nav-item .nav-link {
@@ -140,6 +141,7 @@ ul li {
 }
 .sidebar-menu-item.open > .sub-menu {
   opacity: 1;
+  display: block;
   transform: scaleY(1);
 }
 

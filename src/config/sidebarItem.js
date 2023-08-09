@@ -1,5 +1,6 @@
 import { AiFillDashboard, AiOutlineUsergroupAdd } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
+import {SiGoogleclassroom} from "react-icons/si"
 import { v4 as uuid } from "uuid";
 
 export const sidebarItems = [
@@ -11,13 +12,13 @@ export const sidebarItems = [
   },
   {
     id: uuid(),
-    title: "Student",
+    title: "Học sinh",
     icon: <PiStudentBold className="me-2" />,
     url: "/admin/students",
   },
   {
     id: uuid(),
-    title: "Teacher",
+    title: "Giáo viên",
     icon: "users",
     children: [
       {
@@ -34,4 +35,10 @@ export const sidebarItems = [
       },
     ],
   },
+  {
+    id: uuid(),
+    title: "Danh sách lớp",
+    icon: <SiGoogleclassroom className="me-2" />,
+    url: "/admin/classes"
+  }
 ];

@@ -15,6 +15,7 @@ import moment from "moment";
 import classesApi from "@/api-client/classes-api";
 import LoadingCustom from "@/components/loading/loading";
 import { BeatLoader } from "react-spinners";
+import Head from "next/head";
 
 export default function EditStudent() {
   const router = useRouter();
@@ -82,6 +83,7 @@ export default function EditStudent() {
     address: student?.address || "",
     date_checkin: student?.date_checkin || "",
     note: student?.note || "",
+    status: student?.status,
   };
 
   const handleSubmit = async (values) => {
@@ -98,6 +100,9 @@ export default function EditStudent() {
 
   return (
     <>
+      <Head>
+        <title>Edit Student</title>
+      </Head>
       {isLoading ? (
         <LoadingCustom />
       ) : (
@@ -232,6 +237,17 @@ export default function EditStudent() {
                                 label="Ghi chú"
                                 name="note"
                                 value={student?.note || ""}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <Select
+                                label="Trạng thái"
+                                name="status"
+                                options={[
+                                  { id: 1, name: "Đang học" },
+                                  { id: 2, name: "Nghỉ học" },
+                                ]}
+                                defaultValue={student?.status}
                               />
                             </div>
                           </div>
