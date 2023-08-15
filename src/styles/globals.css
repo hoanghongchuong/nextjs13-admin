@@ -244,6 +244,12 @@ ul li {
 .table thead {
   background-color: #f4f6f9;
 }
+.pl-0 {
+  padding-left: 0;
+}
+.pr-0 {
+  padding-right: 0;
+}
 @media (min-width: 1200px) {
   .card-title {
     font-size: 1rem;

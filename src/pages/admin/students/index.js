@@ -156,14 +156,14 @@ function StudentList(props) {
                 onChange={(e) => setKeyword(e.target.value)}
               />
             </div>
-            <div className="col-2">
+            <div className="col-2 pl-0">
               <Form.Select aria-label="Default select example" size="sm" onChange={handleSelectChange}>
                 <option value="">Trạng thái</option>
                 <option value="1">Đang học</option>
                 <option value="2">Nghỉ học</option>
               </Form.Select>
             </div>
-            <div className="col-4">
+            <div className="col-4 pl-0">
               <button type="button" className="btn btn-sm btn-primary" onClick={handleClickSearch}>
                 Tìm kiếm
               </button>

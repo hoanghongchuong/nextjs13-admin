@@ -16,6 +16,21 @@ import classesApi from "@/api-client/classes-api";
 import LoadingCustom from "@/components/loading/loading";
 import { BeatLoader } from "react-spinners";
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Trường này là bắt buộc."),
+  parent_name: Yup.string().required("Trường này là bắt buộc."),
+  phone: Yup.string().required("Trường này là bắt buộc."),
+  birthday: Yup.string()
+    .transform((value, originalValue) => {
+      if (moment(originalValue, "DD-MM-YYYY", true).isValid()) {
+        return moment(originalValue, "DD-MM-YYYY").format("YYYY-MM-DD");
+      }
+      return originalValue;
+    })
+    .required("Trường này là bắt buộc."),
+  address: Yup.string(),
+});
+
 export default function CreateStudent() {
   const router = useRouter();
   const [listClasses, setListClasses] = useState([]);
@@ -37,22 +52,8 @@ export default function CreateStudent() {
     }
   }, []);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Trường này là bắt buộc."),
-    parent_name: Yup.string().required("Trường này là bắt buộc."),
-    phone: Yup.string().required("Trường này là bắt buộc."),
-    birthday: Yup.string()
-      .transform((value, originalValue) => {
-        if (moment(originalValue, "DD-MM-YYYY", true).isValid()) {
-          return moment(originalValue, "DD-MM-YYYY").format("YYYY-MM-DD");
-        }
-        return originalValue;
-      })
-      .required("Trường này là bắt buộc."),
-    address: Yup.string(),
-  });
   const initialValues = {
-    full_name: "",
+    name: "",
     parent_name: "",
     phone: "",
     gender: 1,
@@ -60,7 +61,6 @@ export default function CreateStudent() {
     address: "",
     date_checkin: "",
   };
-
 
   const handleSubmit = async (values) => {
     try {
@@ -115,8 +115,7 @@ export default function CreateStudent() {
                             <h3 className="card-title mb-0">
                               Thông tin học sinh
                             </h3>
-                            <div className="card-tool">
-                            </div>
+                            <div className="card-tool"></div>
                           </div>
                           <div className="card-body">
                             <div className="form-group mb-3">
@@ -125,6 +124,7 @@ export default function CreateStudent() {
                                 required
                                 type="text"
                                 label="Họ và tên"
+                                placeholder="Nhập họ tên học sinh"
                               />
                             </div>
                             <div className="form-group mb-3">

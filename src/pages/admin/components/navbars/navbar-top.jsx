@@ -85,7 +85,7 @@ function NavbarTop({ toggleSidebar }) {
             <span id="nav-toggle" className="m-2" onClick={toggleSidebar}>
               <FaBars />
             </span>
-            <div className="ms-lg-3 d-none d-md-none d-lg-block">
+            {/* <div className="ms-lg-3 d-none d-md-none d-lg-block">
               <form className="d-flex align-items-center">
                 <input
                   placeholder="Search"
@@ -93,7 +93,7 @@ function NavbarTop({ toggleSidebar }) {
                   className="form-control"
                 />
               </form>
-            </div>
+            </div> */}
           </div>
           <div className="navbar-right ms-2 d-flex nav-top-wrap navbar-nav align-items-center">
             <div className="topnav-right-item me-2">
