@@ -6,4 +6,10 @@ export const scheduleApi = {
       params: { start_date: startDate, end_date: endDate },
     });
   },
+  getDetailSchedule(id) {
+    return axiosClient.get(`/schedule/detail/${id}`);
+  },
+  editSchedule(id, params) {
+    return axiosClient.put(`/schedule/edit/${id}`, {params: params})
+  }
 };
