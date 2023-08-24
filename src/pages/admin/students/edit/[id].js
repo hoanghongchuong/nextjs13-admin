@@ -264,12 +264,12 @@ export default function EditStudent() {
                           >
                             {isSaving ? (
                               <>
-                                Saving
+                                Lưu
                                 <BeatLoader color="#3498db" size={6} />
                               </>
                             ) : (
                               <>
-                                <i className="fa fa-save"></i> Save
+                                <i className="fa fa-save"></i> Lưu
                               </>
                             )}
                           </button>

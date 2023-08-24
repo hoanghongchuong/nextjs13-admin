@@ -2,6 +2,7 @@ import { AiFillDashboard, AiOutlineUsergroupAdd } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
 import {SiGoogleclassroom} from "react-icons/si";
 import {SlCalender} from "react-icons/sl";
+import {VscBook} from "react-icons/vsc";
 
 import { v4 as uuid } from "uuid";
 
@@ -48,5 +49,11 @@ export const sidebarItems = [
     title: "Thời khóa biểu",
     icon: <SlCalender className="me-2" />,
     url: "/admin/schedules"
+  },
+  {
+    id: uuid(),
+    title: "Học tập rèn luyện",
+    icon: <VscBook className="me-2" />,
+    url: "/admin/attendance"
   }
 ];

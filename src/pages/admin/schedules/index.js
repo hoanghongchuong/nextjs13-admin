@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -26,6 +27,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function SchedulePage() {
+  const router = useRouter();
   const formatDate = useDateFormat();
   const [showModalEvent, setShowModalEvent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +44,6 @@ export default function SchedulePage() {
   }, [selectedDateRange]);
 
   const handleDatesSet = async (date) => {
-    console.log("sss");
     setSelectedDateRange({
       start: moment(date.start).format("Y-MM-D HH:mm:ss"),
       end: moment(date.end).format("Y-MM-D HH:mm:ss"),
@@ -119,10 +120,14 @@ export default function SchedulePage() {
       setIsSaving(false);
       handleHiddenModal();
     } catch (error) {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-    
   };
+
+  function handleAttendance() {
+
+    router.push(`/admin/schedules/${scheduleSelected.id}`);
+  }
 
   return (
     <>
@@ -201,7 +206,11 @@ export default function SchedulePage() {
                         <div className="card">
                           <div className="card-header-sticky card-header d-flex justify-content-between align-items-center">
                             <h3 className="card-title mb-0">Thông tin lớp</h3>
-                            <div className="card-tool"></div>
+                            <div className="card-tool">
+                              <Button onClick={() => handleAttendance()}>
+                                Chi tiết
+                              </Button>
+                            </div>
                           </div>
                           <div className="card-body">
                             <div className="form-group mb-3">
