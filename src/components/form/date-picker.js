@@ -18,9 +18,12 @@ export default function DatePickerCustom(props) {
 
   return (
     <div>
-      <label htmlFor={name} className="fw-500 me-3">
+      {label && (
+        <label htmlFor={name} className="fw-500 me-3">
         {label} {required && <span className="text-danger">*</span>}
       </label>
+      )}
+      
       <Field name={name}>
         {({ form, field }) => {
           const { value } = field;

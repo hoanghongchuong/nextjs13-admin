@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import TextError from "./text-error";
 
 export default function Select(props) {
-  const { label, name, required,defaultValue, options, ...rest } = props;
+  const { label, name, placeholderText, required, defaultValue, options, ...rest } = props;
   const { touched, errors, setFieldValue, values } = useFormikContext();
-
+console.log({rest});
   const inputClassName = `form-select ${
     touched[name] && errors[name] ? "is-invalid" : ""
   }`;
@@ -17,9 +17,12 @@ export default function Select(props) {
 
   return (
     <>
-      <label className="fw-500" htmlFor={name}>
-        {label} {required && <span className="text-danger">*</span>}
-      </label>
+      {label && (
+        <label className="fw-500" htmlFor={name}>
+          {label} {required && <span className="text-danger">*</span>}
+        </label>
+      )}
+
       <Field
         as="select"
         id={name}
@@ -29,7 +32,7 @@ export default function Select(props) {
         value={values[name] || defaultValue}
         onChange={handleChange}
       >
-        <option value="">Chọn</option>
+        <option value="">{placeholderText}</option>
         {options.map((option) => {
           return (
             <option key={option.id} value={option.id}>

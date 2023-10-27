@@ -210,6 +210,7 @@ export default function SchedulePage() {
                               <Button onClick={() => handleAttendance()}>
                                 Chi tiết
                               </Button>
+                            
                             </div>
                           </div>
                           <div className="card-body">

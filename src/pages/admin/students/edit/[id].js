@@ -16,6 +16,7 @@ import classesApi from "@/api-client/classes-api";
 import LoadingCustom from "@/components/loading/loading";
 import { BeatLoader } from "react-spinners";
 import Head from "next/head";
+import { format, parseISO, parse } from "date-fns";
 
 export default function EditStudent() {
   const router = useRouter();
@@ -45,7 +46,6 @@ export default function EditStudent() {
       setIsLoading(true);
       if (studentId && !isNaN(studentId)) {
         async function getStudent() {
-          console.log({ studentId });
           const result = await studentApi.detailStudent(parseInt(studentId));
           setStudent(result.data);
           setIsLoading(false);
@@ -64,14 +64,7 @@ export default function EditStudent() {
     name: Yup.string().required("Trường này là bắt buộc."),
     parent_name: Yup.string().required("Trường này là bắt buộc."),
     phone: Yup.string().required("Trường này là bắt buộc."),
-    birthday: Yup.string()
-      .transform((value, originalValue) => {
-        if (moment(originalValue, "DD-MM-YYYY", true).isValid()) {
-          return moment(originalValue, "DD-MM-YYYY").format("YYYY-MM-DD");
-        }
-        return originalValue;
-      })
-      .required("Trường này là bắt buộc."),
+    birthday: Yup.string().required("Trường này là bắt buộc."),
     address: Yup.string(),
   });
   const initialValues = {
@@ -86,9 +79,24 @@ export default function EditStudent() {
     status: student?.status,
   };
 
+  function formatDate(date) {
+    if (date) {
+      const dateParts = date.split("-");
+      const year = parseInt(dateParts[2], 10);
+      const month = parseInt(dateParts[1], 10) - 1;
+      const day = parseInt(dateParts[0], 10);
+
+      const dateObject = new Date(year, month, day);
+      return dateObject;
+    } else {
+      return null;
+    }
+  }
   const handleSubmit = async (values) => {
     try {
       setIsSaving(true);
+
+      console.log('birthday:::',values.birthday);
       const result = await studentApi.updateStudent(values, studentId);
       toast.success("Success");
     } catch (error) {

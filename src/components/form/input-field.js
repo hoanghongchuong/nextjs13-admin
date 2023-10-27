@@ -9,14 +9,15 @@ export default function InputField(props) {
     touched[name] && errors[name] ? "is-invalid" : ""
   }`;
 
-
   function handleInputChange(e) {}
 
   return (
     <div className="">
-      <label htmlFor={name} className="fw-500">
+      {label && (
+        <label htmlFor={name} className="fw-500">
         {label} {required && <span className="text-danger">*</span>}
       </label>
+      )}
       <Field
         id={name}
         name={name}

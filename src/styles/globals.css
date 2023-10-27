@@ -250,6 +250,62 @@ ul li {
 .pr-0 {
   padding-right: 0;
 }
+.table-container {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  white-space: nowrap;
+}
+.react-datepicker-popper {
+  z-index: 99;
+}
+
+.fixed-columns {
+  position: sticky;
+  left: 0;
+  background-color: white;
+  z-index: 2;
+}
+
+
+.fixed-columns th,
+.fixed-columns td {
+  position: -webkit-sticky;
+}
+.fixed-column-stt {
+  left: 0;
+  min-width: 40px; 
+}
+
+.fixed-column-name {
+  left: 40px; 
+  min-width: 120px; 
+}
+
+.scrolling-columns {
+  position: sticky;
+  /* left: 243px;  */
+  background-color: white;
+  z-index: 1;
+}
+
+.content-report .fixed-table {
+    width: 250px;
+}
+.fixed-table thead {
+  height: 65px;
+}
+.fixed-table td {
+  height: 41px;
+}
+
 @media (min-width: 1200px) {
   .card-title {
     font-size: 1rem;

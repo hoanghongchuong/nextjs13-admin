@@ -55,5 +55,11 @@ export const sidebarItems = [
     title: "Học tập rèn luyện",
     icon: <VscBook className="me-2" />,
     url: "/admin/attendance"
+  },
+  {
+    id: uuid(),
+    title: "Báo cáo",
+    icon: <VscBook className="me-2" />,
+    url: "/admin/report"
   }
 ];
